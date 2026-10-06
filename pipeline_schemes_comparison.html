@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三种落地选型方案实操效果对比看板 (方案A vs 方案B vs 方案C)</title>
+    <style>
+        :root {
+            --bg-primary: #0a0c10;
+            --bg-secondary: #12151f;
+            --bg-card: #181d2a;
+            --border-color: #262c3e;
+            --border-accent: #3b4562;
+            --text-primary: #f1f4fa;
+            --text-secondary: #9aa5be;
+            --text-muted: #64708a;
+            --accent-a: #00d2ff;
+            --accent-b: #b366ff;
+            --accent-c: #10b981;
+            --accent-grad: linear-gradient(135deg, #00d2ff 0%, #b366ff 50%, #10b981 100%);
+            --shadow-card: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
+            padding-bottom: 100px;
+        }
+        header {
+            background: rgba(18, 21, 31, 0.94);
+            border-bottom: 1px solid var(--border-color);
+            padding: 26px 48px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(16px);
+        }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        h1 {
+            font-size: 25px;
+            font-weight: 800;
+            background: var(--accent-grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .badge-group {
+            display: flex;
+            gap: 12px;
+        }
+        .badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+        }
+        .badge.a { border-color: var(--accent-a); color: var(--accent-a); }
+        .badge.b { border-color: var(--accent-b); color: var(--accent-b); }
+        .badge.c { border-color: var(--accent-c); color: var(--accent-c); }
+
+        .desc-banner {
+            font-size: 13.5px;
+            color: var(--text-secondary);
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        main {
+            max-width: 1720px;
+            margin: 32px auto;
+            padding: 0 40px;
+        }
+
+        .scheme-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+            margin-bottom: 36px;
+        }
+        .scheme-hero {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 22px 26px;
+            position: relative;
+            overflow: hidden;
+        }
+        .scheme-hero::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+        }
+        .scheme-hero.a::before { background: var(--accent-a); }
+        .scheme-hero.b::before { background: var(--accent-b); }
+        .scheme-hero.c::before { background: var(--accent-c); }
+
+        .scheme-hero h3 {
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .scheme-hero .sub {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+        .scheme-hero .metric {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        .scheme-hero p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Test Case Section */
+        .case-container {
+            margin-bottom: 48px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: var(--shadow-card);
+        }
+        .case-header {
+            padding: 18px 28px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.015);
+        }
+        .case-title {
+            font-size: 18px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .tag-cat {
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .tag-character { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+        .tag-prop { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+        .tag-scene { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+
+        .schemes-triptych {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 24px;
+            background: #11141c;
+        }
+        .scheme-col {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .scheme-col-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .scheme-col-title {
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .col-lat {
+            font-size: 12px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .img-box {
+            aspect-ratio: 1;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            position: relative;
+            cursor: pointer;
+        }
+        .img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+        .img-box:hover img {
+            transform: scale(1.02);
+        }
+
+        .role-desc {
+            font-size: 12.5px;
+            color: var(--text-secondary);
+            line-height: 1.45;
+            padding: 8px 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 6px;
+        }
+        .prompt-preview {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            max-height: 60px;
+            overflow-y: auto;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 8px;
+        }
+
+        /* Lightbox */
+        #lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            flex-direction: column;
+            padding: 24px 36px;
+        }
+        #lightbox.active { display: flex; }
+        .lb-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+        .lb-close {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 32px;
+            cursor: pointer;
+        }
+        .lb-triptych {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            max-height: 85vh;
+        }
+        .lb-img-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            height: 100%;
+        }
+        .lb-img-wrap img {
+            width: 100%;
+            max-height: 80vh;
+            border-radius: 8px;
+            object-fit: contain;
+            border: 1px solid var(--border-color);
+            background: #000;
+        }
+        .lb-img-title {
+            font-size: 14px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-top">
+            <h1>三种落地选型方案实操效果对比看板 (方案A vs 方案B vs 方案C)</h1>
+            <div class="badge-group">
+                <div class="badge a">⚡ 方案 A: Z-Turbo 单模速测 (17s)</div>
+                <div class="badge b">📐 方案 B: Qwen 2.1 文本直出 (47s)</div>
+                <div class="badge c">🔄 方案 C: 双模协同管道 (17s + 43s)</div>
+            </div>
+        </div>
+        <div class="desc-banner">
+            <span>💡 针对角色（无头四视图）、道具（正交四视图）、场景（建筑空间解构）三类典型资产，在同一机位环境下执行 3 种落地流水线实机实跑对比。</span>
+            <span>🔍 点击任意卡片图片可呼出三图并排全屏高精检视器。</span>
+        </div>
+    </header>
+
+    <main>
+        <div class="scheme-summary-grid">
+            <div class="scheme-hero a">
+                <h3><span>⚡ 方案 A (Z-Image-Turbo 极速概念)</span> <span style="color:var(--accent-a)">单阶段</span></h3>
+                <div class="sub">8 步 AuraFlow 采样 · 极简 Single-Stream DiT</div>
+                <div class="metric" style="color:var(--accent-a)">~17.2s / 图</div>
+                <p><strong>实操效果定位：</strong>出图快到难以置信，天然具有高对比度电影氛围和饱满光影。非常适合作为主创团队<strong>第一轮风暴与快速情绪板（Moodboard）初筛</strong>，但很难直接作为下游严格建模的参考蓝图。</p>
+            </div>
+            <div class="scheme-hero b">
+                <h3><span>📐 方案 B (Qwen Image 2.1 文本直出)</span> <span style="color:var(--accent-b)">单阶段</span></h3>
+                <div class="sub">25 步 Euler 采样 · qwen3vl 语义双流 DiT</div>
+                <div class="metric" style="color:var(--accent-b)">~47.2s / 图</div>
+                <p><strong>实操效果定位：</strong>凭借巨大的视觉语言模型先验，<strong>对“无头”、“严格四象限”和“正交视角”执行极其坚定</strong>。四分格构图犹如 CAD 图纸般整饬，但单图生成耗时约为方案 A 的 2.8 倍，直接用于头脑风暴成本偏高。</p>
+            </div>
+            <div class="scheme-hero c">
+                <h3><span>🔄 方案 C (双模协同：概念先导 $	o$ 工业解构)</span> <span style="color:var(--accent-c)">双阶段串联</span></h3>
+                <div class="sub">Z-Turbo 出概念 $	o$ 潜空间注入 Qwen 2.1 强制规范化</div>
+                <div class="metric" style="color:var(--accent-c)">~61.4s (17s+44s)</div>
+                <p><strong>实操效果定位：</strong><strong>既有方案 A 独有的前卫艺术光影与前卫配色，又具备方案 B 的严格无头三视图与工程分割边界</strong>。完美解决了方案 A“难以严格无头”和方案 B“直出稍显平淡”的双重痛点，是影视与游戏美术工业化管线的最优解。</p>
+            </div>
+        </div>
+
+        <div class="case-container">
+            <div class="case-header">
+                <div class="case-title">
+                    <span class="tag-cat tag-character">character</span>
+                    <span>char_01: 赛博朋克重装雇佣兵</span>
+                </div>
+                <div style="font-size:12.5px;color:var(--text-muted)">基准测试用例对比 · 1024×1024 分辨率</div>
+            </div>
+            <div class="schemes-triptych">
+                <!-- 方案 A -->
+                <div class="scheme-col">
+                    <div class="scheme-col-header">
+                        <span class="scheme-col-title" style="color:var(--accent-a)">⚡ 方案 A (Z-Turbo)</span>
+                        <span class="col-lat" style="color:var(--accent-a)">16.7s</span>
+                    </div>
+                    <div class="img-box" onclick="openTriptych('outputs/pipeline_a/char_01.png', 'outputs/pipeline_b/char_01.png', 'outputs/pipeline_c/char_01.png', '赛博朋克重装雇佣兵')">
+                        <img src="outputs/pipeline_a/char_01.png" loading="lazy" alt="Scheme A">
+                    </div>
+                    <div class="role-desc"><strong>定位：</strong>快速概念情绪板初筛 (8步极速氛围)</div>
+                    <div class="prompt-preview"><strong>Prompt:</strong> Cinematic concept art, Cyberpunk heavy mercenary in tactical exoskeleton armor, matte black and neon orange carbon-fiber plating, combat harness, volumetric neon lighting, 1024x1024, atmospheric masterpiece</div>
+                </div>
+
+                <!-- 方案 B -->
+                <div class="scheme-col">
+                    <div class="scheme-col-header">
+                        <span class="scheme-col-title" style="color:var(--accent-b)">📐 方案 B (Qwen 2.1 直出)</span>
+                        <span class="col-lat" style="color:var(--accent-b)">46.3s</span>
+                    </div>
+                    <div class="img-box" onclick="openTriptych('outputs/pipeline_a/char_01.png', 'outputs/pipeline_b/char_01.png', 'outputs/pipeline_c/char_01.png', '赛博朋克重装雇佣兵')">
+                        <img src="outputs/pipeline_b/char_01.png" loading="lazy" alt="Scheme B">
+                    </div>
+                    <div class="role-desc"><strong>定位：</strong>纯文本直出严谨工业级四视图 (无头/正交)</div>
+                    <div class="prompt-preview"><strong>Prompt:</strong> 4-panel character design turnaround sheet on neutral solid grey background: top-left quadrant is extreme close-up of face and tactical helmet; top-right quadrant is headless front full-body view (headless body model, showing only from neck down to boots, highlighting costume tailoring, carbon armor plating with no head or face); bottom-left quadrant is orthographic side profile view; bottom-right quadrant is orthographic back view. Character subject: Cyberpunk heavy mercenary in tactical exoskeleton armor, matte black and neon orange carbon-fiber plating. Concept blueprint turnaround sheet, distinct border lines, studio product lighting, 1024x1024, sharp textures</div>
+                </div>
+
+                <!-- 方案 C -->
+                <div class="scheme-col">
+                    <div class="scheme-col-header">
+                        <span class="scheme-col-title" style="color:var(--accent-c)">🔄 方案 C (双模协同)</span>
+                        <span class="col-lat" style="color:var(--accent-c)">59.5s 总耗时</span>
+                    </div>
+                    <div class="img-box" onclick="openTriptych('outputs/pipeline_a/char_01.png', 'outputs/pipeline_b/char_01.png', 'outputs/pipeline_c/char_01.png', '赛博朋克重装雇佣兵')">
+                        <img src="outputs/pipeline_c/char_01.png" loading="lazy" alt="Scheme C">
+                    </div>
+                    <div class="role-desc"><strong>定位：</strong>双模协同：承袭 Z-Turbo 概念光影与色调，由 Qwen 2.1 强制规范化为严谨四视图</div>
+                    <div class="prompt-preview"><strong>Workflow:</strong> 载入方案 A 概念资产作为 VAE 潜空间锚点，由 Qwen 2.1 以 42.7s 完成重构与四视图规整输出。</div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="case-container">
+            <div class="case-header">
+                <div class="case-title">
+                    <span class="tag-cat tag-prop">prop</span>
+                    <span>prop_01: 赛博战术等离子手枪</span>
+                </div>
+                <div style="font-size:12.5px;color:var(--text-muted)">基准测试用例对比 · 1024×1024 分辨率</div>
+            </div>
+            <div class="schemes-triptych">
+                <!-- 方案 A -->
+                <div class="scheme-col">
+                    <div class="scheme-col-header">
+                        <span class="scheme-col-title" style="color:var(--accent-a)">⚡ 方案 A (Z-Turbo)</span>
+                        <span class="col-lat" style="color:var(--accent-a)">18.1s</span>
+                    </div>
+                    <div class="img-box" onclick="openTriptych('outputs/pipeline_a/prop_01.png', 'outputs/pipeline_b/prop_01.png', 'outputs/pipeline_c/prop_01.png', '赛博战术等离子手枪')">
+                        <img src="outputs/pipeline_a/prop_01.png" loading="lazy" alt="Scheme A">
+                    </div>
+                    <div class="role-desc"><strong>定位：</strong>快速概念情绪板初筛 (8步极速氛围)</div>
+                    <div class="prompt-preview"><strong>Prompt:</strong> Cinematic hero prop shot of a futuristic cyberpunk plasma blaster sidearm with battery magazine, glowing energy heatsink vents, carbon-fiber textured ergonomic grip, dramatic rim light, 1024x1024, photo-studio lighting</div>
+                </div>
+
+                <!-- 方案 B -->
+                <div class="scheme-col">
+                    <div class="scheme-col-header">
+                        <span class="scheme-col-title" style="color:var(--accent-b)">📐 方案 B (Qwen 2.1 直出)</span>
+                        <span class="col-lat" style="color:var(--accent-b)">47.1s</span>
+                    </div>
+                    <div class="img-box" onclick="openTriptych('outputs/pipeline_a/prop_01.png', 'outputs/pipeline_b/prop_01.png', 'outputs/pipeline_c/prop_01.png', '赛博战术等离子手枪')">
+                        <img src="outputs/pipeline_b/prop_01.png" loading="lazy" alt="Scheme B">
+                    </div>
+                    <div class="role-desc"><strong>定位：</strong>纯文本直出严谨工业级四视图 (无头/正交)</div>
+                    <div class="prompt-preview"><strong>Prompt:</strong> 4-panel prop design sheet, 4-view split panel layout on clean neutral gradient studio background: top-left quadrant is extreme macro close-up of intricate mechanical joints, surface textures, and battery magazine; top-right quadrant is front orthographic view of the entire plasma blaster sidearm; bottom-left quadrant is side profile view showing thickness and silhouette; bottom-right quadrant is top-down aerial overhead view. Futuristic cyberpunk plasma blaster. Industrial design reference blueprint, clean divider lines, studio product lighting, 1024x1024</div>
+                </div>
+
+                <!-- 方案 C -->
+                <div class="scheme-col">
+                    <div class="scheme-col-header">
+                        <span class="scheme-col-title" style="color:var(--accent-c)">🔄 方案 C (双模协同)</span>
+                        <span class="col-lat" style="color:var(--accent-c)">62.4s 总耗时</span>
+                    </div>
+                    <div class="img-box" onclick="openTriptych('outputs/pipeline_a/prop_01.png', 'outputs/pipeline_b/prop_01.png', 'outputs/pipeline_c/prop_01.png', '赛博战术等离子手枪')">
+                        <img src="outputs/pipeline_c/prop_01.png" loading="lazy" alt="Scheme C">
+                    </div>
+                    <div class="role-desc"><strong>定位：</strong>双模协同：承袭 Z-Turbo 概念光影与色调，由 Qwen 2.1 强制规范化为严谨四视图</div>
+                    <div class="prompt-preview"><strong>Workflow:</strong> 载入方案 A 概念资产作为 VAE 潜空间锚点，由 Qwen 2.1 以 44.3s 完成重构与四视图规整输出。</div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="case-container">
+            <div class="case-header">
+                <div class="case-title">
+                    <span class="tag-cat tag-scene">scene</span>
+                    <span>scene_01: 赛博朋克雨夜九龙城寨</span>
+                </div>
+                <div style="font-size:12.5px;color:var(--text-muted)">基准测试用例对比 · 1024×1024 分辨率</div>
+            </div>
+            <div class="schemes-triptych">
+                <!-- 方案 A -->
+                <div class="scheme-col">
+                    <div class="scheme-col-header">
+                        <span class="scheme-col-title" style="color:var(--accent-a)">⚡ 方案 A (Z-Turbo)</span>
+                        <span class="col-lat" style="color:var(--accent-a)">18.1s</span>
+                    </div>
+                    <div class="img-box" onclick="openTriptych('outputs/pipeline_a/scene_01.png', 'outputs/pipeline_b/scene_01.png', 'outputs/pipeline_c/scene_01.png', '赛博朋克雨夜九龙城寨')">
+                        <img src="outputs/pipeline_a/scene_01.png" loading="lazy" alt="Scheme A">
+                    </div>
+                    <div class="role-desc"><strong>定位：</strong>快速概念情绪板初筛 (8步极速氛围)</div>
+                    <div class="prompt-preview"><strong>Prompt:</strong> Cinematic wide establishing shot of Cyberpunk neon-drenched dense vertical alleyway in rainy night, towering modular apartment blocks with tangled hanging cables, glowing holographic kanji neon signs reflected on wet asphalt, steam rising from street gutters, cinematic volumetric lighting, 1024x1024</div>
+                </div>
+
+                <!-- 方案 B -->
+                <div class="scheme-col">
+                    <div class="scheme-col-header">
+                        <span class="scheme-col-title" style="color:var(--accent-b)">📐 方案 B (Qwen 2.1 直出)</span>
+                        <span class="col-lat" style="color:var(--accent-b)">48.3s</span>
+                    </div>
+                    <div class="img-box" onclick="openTriptych('outputs/pipeline_a/scene_01.png', 'outputs/pipeline_b/scene_01.png', 'outputs/pipeline_c/scene_01.png', '赛博朋克雨夜九龙城寨')">
+                        <img src="outputs/pipeline_b/scene_01.png" loading="lazy" alt="Scheme B">
+                    </div>
+                    <div class="role-desc"><strong>定位：</strong>纯文本直出严谨工业级四视图 (无头/正交)</div>
+                    <div class="prompt-preview"><strong>Prompt:</strong> Architectural breakdown and production design sheet of Cyberpunk vertical alleyway in rainy night: top-left quadrant is macro architectural detail of tangled cables and neon sign fixtures; top-right quadrant is wide orthographic frontal facade elevation; bottom-left quadrant is street-level corridor perspective; bottom-right quadrant is isometric cross-section layout. Clean dividing borders, studio architectural blueprint, 1024x1024</div>
+                </div>
+
+                <!-- 方案 C -->
+                <div class="scheme-col">
+                    <div class="scheme-col-header">
+                        <span class="scheme-col-title" style="color:var(--accent-c)">🔄 方案 C (双模协同)</span>
+                        <span class="col-lat" style="color:var(--accent-c)">62.4s 总耗时</span>
+                    </div>
+                    <div class="img-box" onclick="openTriptych('outputs/pipeline_a/scene_01.png', 'outputs/pipeline_b/scene_01.png', 'outputs/pipeline_c/scene_01.png', '赛博朋克雨夜九龙城寨')">
+                        <img src="outputs/pipeline_c/scene_01.png" loading="lazy" alt="Scheme C">
+                    </div>
+                    <div class="role-desc"><strong>定位：</strong>双模协同：承袭 Z-Turbo 概念光影与色调，由 Qwen 2.1 强制规范化为严谨四视图</div>
+                    <div class="prompt-preview"><strong>Workflow:</strong> 载入方案 A 概念资产作为 VAE 潜空间锚点，由 Qwen 2.1 以 44.2s 完成重构与四视图规整输出。</div>
+                </div>
+            </div>
+        </div>
+    
+    </main>
+
+    <div id="lightbox" onclick="closeTriptych(event)">
+        <div class="lb-head">
+            <span id="lb-title" style="font-size:16px;font-weight:800;"></span>
+            <button class="lb-close" onclick="closeTriptych(event)">&times;</button>
+        </div>
+        <div class="lb-triptych">
+            <div class="lb-img-wrap">
+                <span class="lb-img-title" style="color:var(--accent-a)">方案 A：Z-Turbo 快速概念图 (8步)</span>
+                <img id="lb-img-a" src="" alt="">
+            </div>
+            <div class="lb-img-wrap">
+                <span class="lb-img-title" style="color:var(--accent-b)">方案 B：Qwen 2.1 文本直出四视图 (25步)</span>
+                <img id="lb-img-b" src="" alt="">
+            </div>
+            <div class="lb-img-wrap">
+                <span class="lb-img-title" style="color:var(--accent-c)">方案 C：双模协同 (概念光影 + 工业规整)</span>
+                <img id="lb-img-c" src="" alt="">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openTriptych(srcA, srcB, srcC, title) {
+            const lb = document.getElementById('lightbox');
+            document.getElementById('lb-img-a').src = srcA;
+            document.getElementById('lb-img-b').src = srcB;
+            document.getElementById('lb-img-c').src = srcC;
+            document.getElementById('lb-title').innerText = title + " —— 三方案并排高精对比检视器";
+            lb.classList.add('active');
+        }
+
+        function closeTriptych(e) {
+            if (e.target.id === 'lightbox' || e.target.classList.contains('lb-close')) {
+                document.getElementById('lightbox').classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>

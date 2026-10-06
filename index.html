@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComfyUI 对照实验与方案评测看板门户</title>
+    <style>
+        :root {
+            --bg-primary: #0a0c12;
+            --bg-secondary: #121622;
+            --bg-card: #181d2c;
+            --border-color: #262e44;
+            --text-primary: #f1f4fa;
+            --text-secondary: #9aa5be;
+            --text-muted: #64708a;
+            --accent-grad: linear-gradient(135deg, #00d2ff 0%, #b366ff 50%, #10b981 100%);
+            --shadow: 0 16px 36px rgba(0,0,0,0.5);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 960px;
+            width: 100%;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        h1 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: var(--accent-grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        p.subtitle {
+            font-size: 15px;
+            color: var(--text-secondary);
+        }
+        .cards-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        .portal-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .portal-card:hover {
+            transform: translateY(-4px);
+            border-color: #48577e;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+        }
+        .portal-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+        }
+        .card-1::before { background: linear-gradient(90deg, #00d2ff, #b366ff); }
+        .card-2::before { background: linear-gradient(90deg, #b366ff, #10b981); }
+        .tag {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 14px;
+        }
+        .card-1 .tag { background: rgba(0, 210, 255, 0.15); color: #00d2ff; }
+        .card-2 .tag { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+        h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        p.card-desc {
+            font-size: 13.5px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+        .meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12.5px;
+            color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding-top: 14px;
+        }
+        .action-arrow {
+            font-weight: 700;
+            color: #00d2ff;
+        }
+        .card-2 .action-arrow { color: #10b981; }
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 12.5px;
+            color: var(--text-muted);
+        }
+        @media (max-width: 640px) {
+            .cards-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ComfyUI 对照实验与方案评测看板</h1>
+            <p class="subtitle">飞牛 NAS (RTX A3000 12G) 远端生图实测 · Z-Image-Turbo Int8 vs Qwen Image 2.1</p>
+        </header>
+        <div class="cards-grid">
+            <a href="benchmark_report.html" class="portal-card card-1">
+                <div>
+                    <span class="tag">Benchmark (180张全量样本)</span>
+                    <h2>全量对照基准报告</h2>
+                    <p class="card-desc">涵盖人物四宫格（面部特写/无头正面/三视）、道具工业四视图、场景资产共 90 组（180张大图）全量并排对照，含全维度雷达评分与能力矩阵。</p>
+                </div>
+                <div class="meta">
+                    <span>90 组 · 1024×1024 · 双模并排</span>
+                    <span class="action-arrow">进入检视 →</span>
+                </div>
+            </a>
+            <a href="pipeline_schemes_comparison.html" class="portal-card card-2">
+                <div>
+                    <span class="tag">Pipeline (三种落地工作流)</span>
+                    <h2>三种方案实操效果对比</h2>
+                    <p class="card-desc">对比方案 A（Z-Turbo 17s 极速情绪板）、方案 B（Qwen 2.1 47s 严谨四视图）以及方案 C（双模串联协同：概念先导 $	o$ 工业解构 61s）的真实落地交付效果。</p>
+                </div>
+                <div class="meta">
+                    <span>方案 A vs 方案 B vs 方案 C</span>
+                    <span class="action-arrow">进入检视 →</span>
+                </div>
+            </a>
+        </div>
+        <footer>
+            <span>Deployed via Cloudflare / GitHub / NAS Reverse Proxy · Comfy-MCP Powered</span>
+        </footer>
+    </div>
+</body>
+</html>
